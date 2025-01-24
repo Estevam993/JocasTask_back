@@ -2,12 +2,10 @@
 Um breve passo a passo sobre a API que estou criando.
 ___
 # Sumário
-- [Jocas Task API](#jocas-task-api)
-- [Sumário](#sumário)
-- [Objetivo](#objetivo)
-- [End-points](#end-points)
-  - [Users](#users)
-  - [Auth](#auth)
+1. [Objetivo](#objetivo)
+2. [Endpoints](#endpoints)
+	1. [Users](#users)
+	2. [Auth](#auth)
 
 ___
 # Objetivo
@@ -47,8 +45,8 @@ ___
 
 ```json
 {
-    "name": "Teste 2",
-    "password": "123"
+  "name": "Teste 2",
+  "password": "123"
 }
 ```
 - Atualiza o usuário de acordo com os campos enviados.
@@ -63,9 +61,9 @@ ___
 
 ```json
 {
-    "email": "teste@teste.com.br",
-    "password": "123"
+  "email": "teste@teste.com.br",
+  "password": "123"
 }
 ```
-- Caso a senha esteja correta, retorna um token.
+- Caso a senha esteja correta, retorna um toquem.
 
