@@ -2,12 +2,10 @@
 Um breve passo a passo sobre a API que estou criando.
 ___
 # Sumário
-- [Jocas Task API](#jocas-task-api)
-- [Sumário](#sumário)
-- [Objetivo](#objetivo)
-- [End-points](#end-points)
-  - [Users](#users)
-  - [Auth](#auth)
+1. [Objetivo](#objetivo)
+2. [Endpoints](#endpoints)
+	1. [Users](#users)
+	2. [Auth](#auth)
 
 ___
 # Objetivo
