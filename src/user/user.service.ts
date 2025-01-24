@@ -1,24 +1,37 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { InjectModel } from "@nestjs/sequelize";
-import { User } from "./entities/user.entity";
+import { InjectModel } from '@nestjs/sequelize';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
-
   constructor(
     @InjectModel(User)
-    private userRepository: typeof User)
-  {}
+    private userRepository: typeof User,
+  ) {}
 
   async create(createUserDto: CreateUserDto) {
-    try{
-      const user = await this.userRepository.create(createUserDto as any);
-      console.log(user);
-      return `Usuario ${user.name} criado com sucesso`;
-    }catch (error) {
-      return (error)
+    if(this.validatePassword(createUserDto.password)){
+      try {
+        const user = await this.userRepository.create(createUserDto as any);
+
+        const response = {
+          id: user.id,
+          status: 'success',
+          message: `Usuario ${user.name} criado com sucesso`
+        }
+
+        return JSON.stringify(response);
+      } catch (error) {
+        return error;
+      }
+    }else{
+      return `A senha precisa ter mais de 3 caracteres.`
     }
   }
 
@@ -31,17 +44,62 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
-
     try {
-      return await this.userRepository.update(updateUserDto, { where: { id } });
+      const user = await this.userRepository.findByPk(id);
 
+      if (!user) {
+        throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      }
+
+      if (updateUserDto.password) {
+        await user.updateWithPassword(updateUserDto);
+      } else {
+        await user.update(updateUserDto);
+      }
+
+      const response = {
+        id: user.id,
+        status: 'success',
+        message: `Usuário com ID ${id} atualizado com sucesso`,
+      };
+      return JSON.stringify(response);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
-
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: number, updateUserDto: UpdateUserDto) {
+    try {
+      const user = await this.userRepository.findByPk(id);
+
+      if (!user) {
+        throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+      }
+
+      if (user.status) {
+        await user.disable(updateUserDto);
+      }
+
+      const response = {
+        id: user.id,
+        status: 'success',
+        message: `Usuário com ID ${id} desabilitado`,
+      };
+
+      return JSON.stringify(response);
+    } catch (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+  }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepository.findOne({ where: { email } }); // Busca por e-mail
+  }
+
+  validatePassword(password: string) {
+    // const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const regex = /^.{3,}$/;
+
+    return !!regex.test(password);
   }
 }
