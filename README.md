@@ -45,8 +45,8 @@ ___
 
 ```json
 {
-    "name": "Teste 2",
-    "password": "123"
+  "name": "Teste 2",
+  "password": "123"
 }
 ```
 - Atualiza o usuário de acordo com os campos enviados.
@@ -61,9 +61,9 @@ ___
 
 ```json
 {
-    "email": "teste@teste.com.br",
-    "password": "123"
+  "email": "teste@teste.com.br",
+  "password": "123"
 }
 ```
-- Caso a senha esteja correta, retorna um token.
+- Caso a senha esteja correta, retorna um toquem.
 
