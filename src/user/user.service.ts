@@ -16,23 +16,27 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    if(this.validatePassword(createUserDto.password)){
+    if (this.validatePassword(createUserDto.password)) {
       try {
         const user = await this.userRepository.create(createUserDto as any);
 
         const response = {
           id: user.id,
           status: 'success',
-          message: `Usuario ${user.name} criado com sucesso`
-        }
+          message: `Usuario ${user.name} criado com sucesso`,
+        };
 
         return JSON.stringify(response);
       } catch (error) {
         return error;
       }
-    }else{
-      return `A senha precisa ter mais de 3 caracteres.`
     }
+    const response = {
+      status: 'error',
+      message: `A senha precisa ter mais de 3 caracteres.`,
+    };
+
+    return JSON.stringify(response);
   }
 
   findAll() {
@@ -51,17 +55,26 @@ export class UserService {
         throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
       }
 
-      if (updateUserDto.password) {
-        await user.updateWithPassword(updateUserDto);
-      } else {
-        await user.update(updateUserDto);
+      if (this.validatePassword(updateUserDto.password)) {
+        if (updateUserDto.password) {
+          await user.updateWithPassword(updateUserDto);
+        } else {
+          await user.update(updateUserDto);
+        }
+
+        const response = {
+          id: user.id,
+          status: 'success',
+          message: `Usuário com ID ${id} atualizado com sucesso`,
+        };
+        return JSON.stringify(response);
       }
 
       const response = {
-        id: user.id,
-        status: 'success',
-        message: `Usuário com ID ${id} atualizado com sucesso`,
+        status: 'error',
+        message: `A senha precisa ter mais de 3 caracteres.`,
       };
+
       return JSON.stringify(response);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
