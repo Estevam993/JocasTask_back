@@ -37,7 +37,7 @@ export class FramesController {
     return this.framesService.findOne(+id);
   }
 
-  @Post(':id')
+  @Post('update/:id')
   update(@Param('id') id: string, @Body() updateFrameDto: UpdateFrameDto) {
     return this.framesService.update(+id, updateFrameDto);
   }

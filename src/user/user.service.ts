@@ -100,7 +100,6 @@ export class UserService {
         await userRequest.update(user);
       }
 
-
       return {
         id: userRequest.id,
         status: 'success',
@@ -123,13 +122,12 @@ export class UserService {
         await user.disable(updateUserDto);
       }
 
-      const response = {
+      return {
         id: user.id,
         status: 'success',
         message: `Usuário com ID ${id} desabilitado`,
       };
 
-      return JSON.stringify(response);
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

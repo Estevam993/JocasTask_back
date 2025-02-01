@@ -2,10 +2,21 @@
 Um breve passo a passo sobre a API que estou criando.
 ___
 # Sumário
-1. [Objetivo](#objetivo)
-2. [Endpoints](#endpoints)
-	1. [Users](#users)
-	2. [Auth](#auth)
+- [Jocas Task API](#jocas-task-api)
+- [Sumário](#sumário)
+- [Objetivo](#objetivo)
+- [End-points](#end-points)
+  - [Users](#users)
+    - [Create](#create)
+    - [Get](#get)
+    - [Update](#update)
+    - [Delete](#delete)
+  - [Auth](#auth)
+  - [Frames](#frames)
+    - [Create](#create-1)
+    - [Get by user id](#get-by-user-id)
+    - [Update](#update-1)
+    - [Delete](#delete-1)
 
 ___
 # Objetivo
@@ -18,7 +29,7 @@ Este CRUD terá que:
 ___
 # End-points
 ## Users
-
+### Create
 ==POST== **`/user`**
 
 <p style="text-align:center">BODY</p>
@@ -34,11 +45,11 @@ ___
 
 > [!WARNING] ATENÇÃO
 > É necessário a senha ter 3 caracteres.
-
+### Get
 ==GET== **`/user/:id?`**
 
 - Este end-point mostra todos os usuários, ou então apenas um se colocado id.
-
+### Update
 ==POST== **`/user/update/:id`**
 
 <p style="text-align:center">BODY</p>
@@ -50,8 +61,8 @@ ___
 }
 ```
 - Atualiza o usuário de acordo com os campos enviados.
-
-==DELETE== **`/user/delete/:id`**
+### Delete
+==DELETE== **`/user/:id`**
 - Desativa o usuário informado.
 ___
 ## Auth
@@ -67,3 +78,36 @@ ___
 ```
 - Caso a senha esteja correta, retorna um toquem.
 
+___
+## Frames
+A partir daqui, será necessário o jwt token para utilizar os endpoints. 
+### Create
+==POST== **`/frames`**
+
+<p style="text-align:center">BODY</p>
+
+```json
+{
+  "description": "Meu quadro"
+}
+```
+- Este end-point criara um quadro novo.
+### Get by user id
+==GET== **`/frames`**
+
+- Este end-point mostra todos os quadros do usuário atual
+### Update
+==POST== **`/frames/update/4`**
+
+<p style="text-align:center">BODY</p>
+
+```json
+{
+  "name": "Teste 2",
+  "password": "123"
+}
+```
+- Atualiza o usuário de acordo com os campos enviados.
+### Delete
+==DELETE== **`/user/:id`**
+- Desativa o quadro informado.
