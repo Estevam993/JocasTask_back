@@ -15,28 +15,39 @@ export class UserService {
     private userRepository: typeof User,
   ) {}
 
-  async create(createUserDto: CreateUserDto) {
-    if (this.validatePassword(createUserDto.password)) {
-      try {
-        const user = await this.userRepository.create(createUserDto as any);
-
-        const response = {
-          id: user.id,
-          status: 'success',
-          message: `Usuario ${user.name} criado com sucesso`,
-        };
-
-        return JSON.stringify(response);
-      } catch (error) {
-        return error;
-      }
+  async create(user: CreateUserDto) {
+    if (!this.validateName(user.name)) {
+      return {
+        status: 'error',
+        message: `O nome de usuário é obrigatorio.`,
+      };
     }
-    const response = {
-      status: 'error',
-      message: `A senha precisa ter mais de 3 caracteres.`,
-    };
 
-    return JSON.stringify(response);
+    if (!this.validateEmail(user.email)) {
+      return {
+        status: 'error',
+        message: `O email é invalido.`,
+      };
+    }
+
+    if (!this.validatePassword(user.password)) {
+      return {
+        status: 'error',
+        message: `A senha precisa ter mais de 3 caracteres.`,
+      };
+    }
+
+    try {
+      const userRequest = await this.userRepository.create(user as any);
+
+      return {
+        id: userRequest.id,
+        status: 'success',
+        message: `Usuario ${userRequest.name} criado com sucesso`,
+      };
+    } catch (error) {
+      return error;
+    }
   }
 
   findAll() {
@@ -47,35 +58,54 @@ export class UserService {
     return this.userRepository.findByPk(id);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, user: UpdateUserDto) {
     try {
-      const user = await this.userRepository.findByPk(id);
+      const userRequest = await this.userRepository.findByPk(id);
 
-      if (!user) {
+      if (!userRequest) {
         throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
       }
 
-      if (this.validatePassword(updateUserDto.password)) {
-        if (updateUserDto.password) {
-          await user.updateWithPassword(updateUserDto);
-        } else {
-          await user.update(updateUserDto);
-        }
-
-        const response = {
-          id: user.id,
-          status: 'success',
-          message: `Usuário com ID ${id} atualizado com sucesso`,
+      if (this.validatePassword(user.password)) {
+        return {
+          status: 'error',
+          message: `A senha precisa ter mais de 3 caracteres.`,
         };
-        return JSON.stringify(response);
       }
 
-      const response = {
-        status: 'error',
-        message: `A senha precisa ter mais de 3 caracteres.`,
-      };
+      if (this.validateName(user.name)) {
+        return {
+          status: 'error',
+          message: `O nome de usuário é obrigatorio.`,
+        };
+      }
 
-      return JSON.stringify(response);
+      if (this.validateEmail(user.email)) {
+        return {
+          status: 'error',
+          message: `O email é invalido.`,
+        };
+      }
+
+      if (this.validatePassword(user.password)) {
+        return {
+          status: 'error',
+          message: `A senha precisa ter mais de 3 caracteres.`,
+        };
+      }
+
+      if (user.password) {
+        await userRequest.updateWithPassword(user);
+      } else {
+        await userRequest.update(user);
+      }
+
+
+      return {
+        id: userRequest.id,
+        status: 'success',
+        message: `Usuário com ID ${id} atualizado com sucesso`,
+      };
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }
@@ -106,7 +136,19 @@ export class UserService {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    return this.userRepository.findOne({ where: { email } }); // Busca por e-mail
+    return this.userRepository.findOne({ where: { email } });
+  }
+
+  validateName(name: string): boolean {
+    const regex = /^.{1,}$/;
+
+    return !!regex.test(name);
+  }
+
+  validateEmail(email: string) {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    return !!regex.test(email);
   }
 
   validatePassword(password: string) {

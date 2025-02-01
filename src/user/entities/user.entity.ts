@@ -1,21 +1,45 @@
-import { Column, Table, Model, BeforeSave } from 'sequelize-typescript';
+import {
+  Column,
+  Table,
+  Model,
+  BeforeSave,
+  AllowNull,
+  DataType,
+  HasMany,
+} from 'sequelize-typescript';
 import { hashSync, compareSync } from 'bcrypt';
+import { Frame } from 'src/frames/entities/frame.entity';
 
 @Table({
   tableName: 'users',
 })
 export class User extends Model {
-  @Column
+  @Column({
+    type: DataType.STRING,
+  })
   status: string;
 
-  @Column
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING,
+  })
   name: string;
 
-  @Column
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING,
+    unique: true,
+  })
   email: string;
 
-  @Column
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING,
+  })
   password: string;
+
+  @HasMany(() => Frame)
+  frames: Frame[];
 
   @BeforeSave
   static async hashPassword(user: User) {

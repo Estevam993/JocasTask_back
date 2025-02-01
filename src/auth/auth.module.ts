@@ -1,18 +1,21 @@
 import { Module } from '@nestjs/common';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { JwtStrategy } from './jwt.strategy'; // ajuste o caminho se necessário
 import { UserModule } from '../user/user.module';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
-    UserModule, // Serviço para buscar usuários
+    UserModule,
+    PassportModule,
     JwtModule.register({
-      secret: '1234', // Substitua por uma chave secreta segura
-      signOptions: { expiresIn: '1h' }, // Tempo de expiração do token
+      secret: '1234',
+      signOptions: { expiresIn: '1h' },
     }),
   ],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
   controllers: [AuthController],
 })
 export class AuthModule {}
