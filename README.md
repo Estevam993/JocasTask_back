@@ -2,21 +2,20 @@
 Um breve passo a passo sobre a API que estou criando.
 ___
 # Sumário
-- [Jocas Task API](#jocas-task-api)
-- [Sumário](#sumário)
-- [Objetivo](#objetivo)
-- [End-points](#end-points)
-  - [Users](#users)
-    - [Create](#create)
-    - [Get](#get)
-    - [Update](#update)
-    - [Delete](#delete)
-  - [Auth](#auth)
-  - [Frames](#frames)
-    - [Create](#create-1)
-    - [Get by user id](#get-by-user-id)
-    - [Update](#update-1)
-    - [Delete](#delete-1)
+1. [Objetivo](#objetivo)
+2. [Endpoints](#endpoints)
+	1. [Users](#users)
+		1. Create
+		2. Get
+		3. Update
+		4. Delete
+	2. [Auth](#auth)
+	3. [Frames](#frames)
+		1. Create
+		2. Get user by id
+		3. Update
+		4. Delete
+	4. [Columns](#columns)
 
 ___
 # Objetivo
@@ -107,7 +106,61 @@ A partir daqui, será necessário o jwt token para utilizar os endpoints.
   "password": "123"
 }
 ```
-- Atualiza o usuário de acordo com os campos enviados.
+- Atualiza o quadro de acordo com os campos enviados.
 ### Delete
 ==DELETE== **`/user/:id`**
 - Desativa o quadro informado.
+___
+## Columns
+### Create
+==POST== **`/columns`**
+
+<p style="text-align:center">BODY</p>
+
+```json
+{
+  "description": "Minha coluna"
+}
+```
+- Este end-point criara uma coluna nova.
+### Update
+==POST== **`/columns/update/:id`**
+
+<p style="text-align:center">BODY</p>
+
+```json
+{
+  "description": "To Do Now"
+}
+```
+- Atualiza a coluna de acordo com os campos enviados.
+### Delete
+==DELETE== **`/column/:id`**
+- Desativa a coluna informada.
+___
+## Tasks
+### Create
+==POST== **`/tasks`**
+
+<p style="text-align:center">BODY</p>
+
+```json
+{
+  "description": "Minha coluna"
+}
+```
+- Este end-point criara uma tarefa nova.
+### Update
+==POST== **`/tasks/update/:id`**
+
+<p style="text-align:center">BODY</p>
+
+```json
+{
+  "description": "To Do Now"
+}
+```
+- Atualiza a tarefa de acordo com os campos enviados.
+### Delete
+==DELETE== **`/tasks/:id`**
+- Desativa a tarefa informada.
