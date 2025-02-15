@@ -66,31 +66,38 @@ export class UserService {
         throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
       }
 
-      if (this.validatePassword(user.password)) {
+      const userPassowrd = user.password;
+      const userEmail = user.email;
+      const userName = user.name;
+
+      const validateUserPassword =
+        typeof userPassowrd != 'undefined' &&
+        !this.validatePassword(userPassowrd);
+
+      const validateUserEmail =
+        typeof userEmail != 'undefined' && !this.validateEmail(userEmail);
+
+      const validateUserName =
+        typeof userName != 'undefined' && !this.validateName(userName);
+
+      if (validateUserPassword) {
         return {
           status: 'error',
           message: `A senha precisa ter mais de 3 caracteres.`,
         };
       }
 
-      if (this.validateName(user.name)) {
+      if (validateUserName) {
         return {
           status: 'error',
           message: `O nome de usuário é obrigatorio.`,
         };
       }
 
-      if (this.validateEmail(user.email)) {
+      if (validateUserEmail) {
         return {
           status: 'error',
           message: `O email é invalido.`,
-        };
-      }
-
-      if (this.validatePassword(user.password)) {
-        return {
-          status: 'error',
-          message: `A senha precisa ter mais de 3 caracteres.`,
         };
       }
 
@@ -127,7 +134,6 @@ export class UserService {
         status: 'success',
         message: `Usuário com ID ${id} desabilitado`,
       };
-
     } catch (error) {
       throw new InternalServerErrorException(error.message);
     }

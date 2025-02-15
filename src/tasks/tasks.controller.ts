@@ -31,9 +31,9 @@ export class TasksController {
 
   @Get('column/:column_id')
   async getByFrame(
-    @Param('frame_id') frame_id: number,
+    @Param('column_id') column_id: number,
   ): Promise<Task[] | null> {
-    return this.tasksService.findByColumn(Number(frame_id));
+    return this.tasksService.findByColumn(Number(column_id));
   }
 
   @Get(':id')
@@ -41,7 +41,7 @@ export class TasksController {
     return this.tasksService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Post('update/:id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return this.tasksService.update(+id, updateTaskDto);
   }
