@@ -77,7 +77,7 @@ export class FramesService {
       const frame = await this.frameRepository.findByPk(id);
 
       if (!frame) {
-        throw new NotFoundException(`Usuário com ID ${id} não encontrado`);
+        throw new NotFoundException(`Quadro com ID ${id} não encontrado`);
       }
 
       if (frame.status) {

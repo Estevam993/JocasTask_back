@@ -9,18 +9,18 @@ import {
   BelongsTo,
   HasMany,
 } from 'sequelize-typescript';
-import { User } from 'src/user/entities/user.entity';
-import { Column } from 'src/columns/entities/column.entity';
+import { Frame } from 'src/frames/entities/frame.entity';
+import { Task } from 'src/tasks/entities/task.entity';
 
 @Table({
-  tableName: 'frames',
+  tableName: 'columns',
 })
-export class Frame extends Model {
-  @BelongsTo(() => User)
-  user: User;
+export class Column extends Model {
+  @BelongsTo(() => Frame)
+  frame: Frame;
 
-  @HasMany(() => Column)
-  columns: Column[];
+  @HasMany(() => Task)
+  tasks: Task[];
 
   @ColumnDecorator({
     type: DataType.STRING,
@@ -33,19 +33,19 @@ export class Frame extends Model {
   })
   description: string;
 
-  @ForeignKey(() => User)
+  @ForeignKey(() => Frame)
   @AllowNull(false)
   @ColumnDecorator({
     type: DataType.INTEGER,
   })
-  user_id: number;
+  frame_id: number;
 
   @BeforeSave
-  static async setStatus(frame: Frame) {
-    frame.status = 'ACTIVE';
+  static async setStatus(column: Column) {
+    column.status = 'ACTIVE';
   }
 
-  async disable(fieldsToUpdate: Partial<Frame>): Promise<void> {
+  async disable(fieldsToUpdate: Partial<Column>): Promise<void> {
     fieldsToUpdate.status = 'INACTIVE';
 
     await this.update(fieldsToUpdate);
