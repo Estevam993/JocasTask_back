@@ -22,7 +22,6 @@ export class Task extends Model {
   })
   description: string;
 
-  @AllowNull(false)
   @ColumnDecorator({
     type: DataType.STRING,
   })
