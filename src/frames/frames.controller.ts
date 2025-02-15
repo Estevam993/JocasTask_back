@@ -13,6 +13,7 @@ import { CreateFrameDto } from './dto/create-frame.dto';
 import { UpdateFrameDto } from './dto/update-frame.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CustomRequest } from 'src/common/custom-request.interface';
+import { Frame } from './entities/frame.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('frames')
@@ -31,6 +32,13 @@ export class FramesController {
     const userId = req.user.id;
     return this.framesService.findByUser(userId);
   }
+
+    @Get('user/:user_id')
+    async getByUser(
+      @Param('user_id') user_id: number,
+    ): Promise<Frame[] | null> {
+      return this.framesService.findByUser(Number(user_id));
+    }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
