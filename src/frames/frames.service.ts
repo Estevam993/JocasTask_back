@@ -7,12 +7,17 @@ import { CreateFrameDto } from './dto/create-frame.dto';
 import { UpdateFrameDto } from './dto/update-frame.dto';
 import { InjectModel } from '@nestjs/sequelize';
 import { Frame } from './entities/frame.entity';
+import { Column } from 'src/columns/entities/column.entity';
+import { Sequelize } from 'sequelize';
 
 @Injectable()
 export class FramesService {
   constructor(
     @InjectModel(Frame)
     private frameRepository: typeof Frame,
+
+    @InjectModel(Column)
+    private columnRepository: typeof Column,
   ) {}
 
   async create(frame: CreateFrameDto) {
@@ -39,8 +44,38 @@ export class FramesService {
     return this.frameRepository.findAll();
   }
 
-  async findByUser(user_id: number): Promise<Frame[] | null> {
-    return this.frameRepository.findAll({ where: { user_id } });
+  async findByUser(user_id: number): Promise<Object> {
+    const frames = await this.frameRepository.findAll({ where: { user_id } });
+
+    if (frames.length > 0) {
+      const frameIds = frames.map((frame) => frame.id);
+
+      // TODO pegar as colunas como [frame_id: 21, total: 3]
+      const columns = await this.columnRepository.findAll({
+        attributes: ['frame_id', [Sequelize.fn('COUNT', Sequelize.col('id')), 'total']],
+        where: { frame_id: frameIds },
+        group: ['frame_id'],
+        raw: true,
+      });
+
+      const message =
+        frames.length > 0
+          ? 'Quadros encontrados com sucesso'
+          : 'Nenhum quadro encontrado';
+      return {
+        frames: frames ?? [],
+        columns: columns ?? [],
+        status: 'success',
+        message: message,
+      };
+    }
+
+    return {
+      frames: [],
+      columns: [],
+      status: 'error',
+      message: 'Nenhum quadro encontrado',
+    };
   }
 
   findOne(id: number) {

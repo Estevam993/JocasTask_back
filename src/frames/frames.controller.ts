@@ -33,12 +33,11 @@ export class FramesController {
     return this.framesService.findByUser(userId);
   }
 
-    @Get('user/:user_id')
-    async getByUser(
-      @Param('user_id') user_id: number,
-    ): Promise<Frame[] | null> {
-      return this.framesService.findByUser(Number(user_id));
-    }
+  @Get('user/:user_id')
+  async getByUser(@Param('user_id') user_id: number) {
+    const frames =  this.framesService.findByUser(Number(user_id));
+    return frames;
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
